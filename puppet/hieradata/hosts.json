@@ -1,0 +1,24 @@
+{
+  "hosts": {
+    "opendaylight": {
+      "name": "opendaylight",
+      "ipaddress": "192.168.50.1"
+    },
+    "rdo-control": {
+      "name": "rdo-control",
+      "ipaddress": "192.168.50.20"
+    },
+    "rdo-compute-1": {
+      "name": "rdo-compute-1",
+      "ipaddress": "192.168.50.21"
+    },
+    "rdo-compute-2": {
+      "name": "rdo-compute-2",
+      "ipaddress": "192.168.50.22"
+    },
+    "rdo-compute-3": {
+      "name": "rdo-compute-3",
+      "ipaddress": "192.168.50.23"
+    }
+  }
+}
