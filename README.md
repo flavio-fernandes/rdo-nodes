@@ -1,14 +1,4 @@
-Title: Installing and running Sonar locally
-Date: 2014-10-11 14:44
-Author: flavio
-Category: Work
-Tags: work, tools, opendaylight
-Slug: how-to-run-sonar-locally
-
-Downloading and running SonarQube in local system
-
-<!--more-->
-
+# RDO-NODES
 
 This repo provides a Vagrantfile with provisioning that one can use to quickly
 get a cluster of nodes configured with RDO and packstack.
