@@ -5,7 +5,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "shell", path: "puppet/scripts/bootstrap.sh"
 
-  num_compute_nodes = (ENV['RDO_NUM_COMPUTE_NODES'] || 1).to_i
+  num_compute_nodes = (ENV['RDO_NUM_COMPUTE_NODES'] || 0).to_i
 
   # ip configuration
   control_ip = "192.168.50.20"
