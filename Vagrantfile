@@ -16,8 +16,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       puppet.hiera_config_path = "puppet/hiera.yaml"
       puppet.working_directory = "/vagrant/puppet"
       puppet.manifests_path = "puppet/manifests"
+      ## no module path added here, as this manifest populates the puppet modules directory
+      ## puppet.module_path = "puppet/modules"
+      puppet.manifest_file  = "base1.pp"
+  end
+  config.vm.provision "puppet" do |puppet|
+      puppet.hiera_config_path = "puppet/hiera.yaml"
+      puppet.working_directory = "/vagrant/puppet"
+      puppet.manifests_path = "puppet/manifests"
       puppet.module_path = "puppet/modules"
-      puppet.manifest_file  = "base.pp"
+      puppet.manifest_file  = "base2.pp"
   end
 
   config.vm.provision :reload
@@ -27,7 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       puppet.working_directory = "/vagrant/puppet"
       puppet.manifests_path = "puppet/manifests"
       puppet.module_path = "puppet/modules"
-      puppet.manifest_file  = "base2.pp"
+      puppet.manifest_file  = "base3.pp"
   end
 
   # Rdo Controller

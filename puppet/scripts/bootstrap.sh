@@ -27,4 +27,7 @@ echo "Installing puppet"
 yum install -y puppet > /dev/null
 
 echo "Puppet installed!"
-puppet module install puppetlabs-stdlib
+
+# Installing Puppet Modules
+puppet module install puppetlabs/vcsrepo
+puppet module install puppetlabs/stdlib
