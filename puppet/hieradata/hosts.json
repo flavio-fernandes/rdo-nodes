@@ -8,17 +8,21 @@
       "name": "rdo-control",
       "ipaddress": "192.168.50.20"
     },
+    "rdo-neutron": {
+      "name": "rdo-neutron",
+      "ipaddress": "192.168.50.21"
+    },
     "rdo-compute-1": {
       "name": "rdo-compute-1",
-      "ipaddress": "192.168.50.21"
+      "ipaddress": "192.168.50.22"
     },
     "rdo-compute-2": {
       "name": "rdo-compute-2",
-      "ipaddress": "192.168.50.22"
+      "ipaddress": "192.168.50.23"
     },
     "rdo-compute-3": {
       "name": "rdo-compute-3",
-      "ipaddress": "192.168.50.23"
+      "ipaddress": "192.168.50.24"
     }
   }
 }

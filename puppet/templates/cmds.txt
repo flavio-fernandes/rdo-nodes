@@ -1,0 +1,80 @@
+
+## fix hypervisor on compute nodes
+. /vagrant/puppet/scripts/config-nova-virt_type.sh
+
+ip link set dev br-ex promisc on
+ip link set dev eth2 promisc on
+
+##  ======================================================================
+
+. /root/keystonerc_admin
+
+glance image-create \
+  --copy-from http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img \
+  --is-public true \
+  --container-format bare \
+  --disk-format qcow2 \
+  --name cirros
+
+nova flavor-create m1.nano auto 128 1 1
+
+keystone tenant-create --name=tenant1 --enabled=true
+
+keystone user-create --name=user1 --pass=user1 --email=user1@example.com 
+
+keystone user-role-add --user=user1 --role=_member_ --tenant=tenant1
+
+## neutron net-create flat-provider-network --shared  --provider:network_type flat --provider:physical_network physnetext
+## physnet1 --> must match what we used at answers.txt
+neutron net-create ext --shared  --provider:network_type flat --provider:physical_network physnetext
+neutron net-update ext --router:external=True
+
+neutron subnet-create --allocation-pool start=192.168.111.20,end=192.168.111.99 --gateway=192.168.111.254 \
+--disable-dhcp --name subext ext 192.168.111.0/24
+
+. /vagrant/puppet/templates/keystonerc_user1.erb
+
+neutron router-create rtr1
+
+### . /root/keystonerc_admin
+neutron router-gateway-set rtr1 ext
+### . /vagrant/puppet/templates/keystonerc_user1.erb
+
+rm -f id_rsa_demo* ; ssh-keygen -t rsa -b 2048 -N '' -f id_rsa_demo
+nova keypair-add --pub-key  id_rsa_demo.pub  demo_key
+
+nova secgroup-create sec1 "sec1"
+nova secgroup-add-rule sec1 icmp -1 -1 0.0.0.0/0
+for x in tcp udp; do nova secgroup-add-rule sec1 ${x} 1 65535 0.0.0.0/0 ; done
+
+
+neutron  net-create int
+neutron  subnet-create --gateway=2.0.0.254 --name=subint int 2.0.0.0/24 --enable-dhcp --dns-nameserver=192.168.111.254
+neutron	 router-interface-add rtr1 subint
+
+VMNAME=vm1
+nova boot --poll --flavor m1.nano --image $(nova image-list | grep 'cirros\s' | awk '{print $2}') \
+--nic net-id=$(neutron net-list | grep -w int | awk '{print $2}') \
+--security-groups sec1 --key-name demo_key \
+${VMNAME}
+
+neutron floatingip-create ext
+FLOAT_IP=$(neutron floatingip-list | grep -v '2.0.0.' | grep '192.168.111.' | head -1 | awk '{print $5}')
+nova add-floating-ip ${VMNAME} ${FLOAT_IP} 
+
+======
+
+https://openstack.redhat.com/Helium_OpenDaylight_Juno_OpenStack#Configure_Control.2BCompute_Node_to_use_OpenDaylight_ML2_Plugin
+
+
+
+
+ip link set dev br-ex promisc on
+ip link set dev eth2 promisc on
+ip link show
+
+iptables -nvxL
+netstat -punta
+
+
+
