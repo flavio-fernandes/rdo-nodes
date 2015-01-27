@@ -50,8 +50,8 @@ In order to easily start openstack and get the example tenant vms running, do th
 
 A brief description of what each bash script does:
 
-- **openstack_part0.sh**: install openstack-packstack package
-- **openstack_part1.sh**: run packstack, using the file in /root/answers.txt. This step may take ~20 minutes.
+- **openstack_part0.sh**: install openstack-packstack package and run packstack, using the file in /root/answers.txt. This step may take ~20 minutes.
+- **openstack_part1.sh**: create tenants and deploy admin network
 - **openstack_part2.sh**: deploy tenant vms for tenant1
 - **openstack_part3.sh**: deploy tenant vms for tenant2
 
