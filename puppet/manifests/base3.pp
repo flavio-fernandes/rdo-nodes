@@ -7,32 +7,36 @@ package { $deps:
     ensure => installed,
 }
 
-exec { "Download RDO":
-    command => "wget https://rdo.fedorapeople.org/rdo-release.rpm",
-    cwd     => "/home/vagrant",
-    creates => "/home/vagrant/rdo-release.rpm",
-    path    => $::path,
-    user    => 'vagrant',
-    require => Package[$deps],
+file { "/root/.ssh":
+  ensure => "directory",
+  owner  => "root",
+  group  => "root",
+  mode   => 700,
 }
 
-package { 'rdo-release':
-    ensure   => installed,
-    provider => rpm,
-    source   => "/home/vagrant/rdo-release.rpm",
-    require  => Exec['Download RDO'],
+file { "/root/.ssh/id_rsa":
+  ensure => "file",
+  owner  => "root",
+  group  => "root",
+  mode   => 600,
+  content => template('/vagrant/puppet/templates/dotSshDir/id_rsa.erb'),
+  require => File["/root/.ssh"],
 }
 
-package { 'openstack-packstack':
-    ensure   => installed,
-    require  => Package['rdo-release'],
+file { "/root/.ssh/id_rsa.pub":
+  ensure => "file",
+  owner  => "root",
+  group  => "root",
+  mode   => 644,
+  content => template('/vagrant/puppet/templates/dotSshDir/id_rsa.pub.erb'),
+  require => File["/root/.ssh"],
 }
 
-exec { 'Yum Update':
-    command => 'yum update -y',
-    cwd     => '/home/vagrant',
-    path    => $::path,
-    user    => 'root',
-    require => Package['openstack-packstack'],
+file { "/root/.ssh/authorized_keys":
+  ensure => "file",
+  owner  => "root",
+  group  => "root",
+  mode   => 600,
+  content => template('/vagrant/puppet/templates/dotSshDir/id_rsa.pub.erb'),
+  require => File["/root/.ssh"],
 }
-

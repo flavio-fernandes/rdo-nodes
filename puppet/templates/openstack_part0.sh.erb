@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+
+## download and install packstack
+
+yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
+yum install -y openstack-packstack
+yum update -y
+
+## run packstack
+
+time /bin/packstack --answer-file /root/answers.txt
+

@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -e
+
+source ./keystonerc_user2
+
+if [ ! -f id_rsa_demo.pub ]; then ssh-keygen -t rsa -b 2048 -N '' -f id_rsa_demo; fi
+nova keypair-add --pub-key  id_rsa_demo.pub  demo_key
+
+neutron router-create rtr2
+neutron router-gateway-set rtr2 ext
+
+nova secgroup-create sec2 "sec2"
+nova secgroup-add-rule sec2 icmp -1 -1 0.0.0.0/0
+for x in tcp udp; do nova secgroup-add-rule sec2 ${x} 1 65535 0.0.0.0/0 ; done
+
+neutron  net-create int
+neutron  subnet-create --gateway=4.0.0.254 --name=subint int 4.0.0.0/24 --enable-dhcp --dns-nameserver=192.168.111.254
+neutron	 router-interface-add rtr2 subint
+
+neutron  net-create intTwo
+neutron  subnet-create --gateway=3.0.0.254 --name=subintTwo intTwo 3.0.0.0/24 --enable-dhcp --dns-nameserver=192.168.111.254
+neutron	 router-interface-add rtr2 subintTwo
+
+# Tenant vm(s) in subnet[One]
+for VMNAME in vm1 vm2 ; do \
+    echo "Creating tenant vm: ${VMNAME}"
+    nova boot --poll --flavor m1.nano --image $(nova image-list | grep 'cirros\s' | awk '{print $2}') \
+    --nic net-id=$(neutron net-list | grep -w int | awk '{print $2}') \
+    --security-groups sec2 --key-name demo_key \
+    ${VMNAME}
+done
+
+# Tenant vm(s) in subnetTwo
+for VMNAME in vm3 ; do \
+    echo "Creating tenant vm: ${VMNAME}"
+    nova boot --poll --flavor m1.nano --image $(nova image-list | grep 'cirros\s' | awk '{print $2}') \
+    --nic net-id=$(neutron net-list | grep -w intTwo | awk '{print $2}') \
+    --security-groups sec2 --key-name demo_key \
+    ${VMNAME}
+done
+
+# Assign floating ips to all tenant vms
+for VMNAME in vm1 vm2 vm3 ; do \
+    neutron floatingip-create ext
+    FLOAT_IP=$(neutron floatingip-list | grep -v '4.0.0.' | grep -v '3.0.0.' | grep '192.168.111.' | head -1 | awk '{print $5}')
+    echo "Assigning floating ip ${FLOAT_IP} to ${VMNAME}"
+    nova add-floating-ip ${VMNAME} ${FLOAT_IP} 
+done

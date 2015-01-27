@@ -5,7 +5,7 @@
 # description: VirtualBox Linux Additions kernel modules Trigger
 #
 ### BEGIN INIT INFO
-# Provides:       vboxadd_setuptrigger
+# Provides:       vboxadd-setuptrigger
 # Required-Start:
 # Required-Stop:
 # Default-Start:  2 3 4 5
@@ -23,6 +23,7 @@ start()
 	${VBOXADD_EXEC} setup
         rc=$?; if [[ $rc != 0 ]]; then return $rc; fi
 	rm -f ${VBOXADD_SETUP_NEEDED_FILE}
+        systemctl restart network.service
     else
         echo 'vboxadd setup is not needed'
     fi

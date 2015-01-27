@@ -31,3 +31,8 @@ echo "Puppet installed!"
 # Installing Puppet Modules
 puppet module install puppetlabs/vcsrepo
 puppet module install puppetlabs/stdlib
+
+# Setting root access
+echo "root:vagrant"|chpasswd
+cat /etc/ssh/sshd_config > /etc/ssh/sshd_config.orig
+sed -i -r -e 's/^#*\s*(PermitRootLogin)\s.*$/\1 yes/' /etc/ssh/sshd_config
