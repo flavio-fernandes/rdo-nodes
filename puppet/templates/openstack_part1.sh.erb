@@ -20,7 +20,7 @@ keystone tenant-create --name=tenant2 --enabled=true
 keystone user-create --name=user2 --pass=user2 --email=user2@example.com 
 keystone user-role-add --user=user2 --role=_member_ --tenant=tenant2
 
-## NOTE: physnet1 --> must match what we used at answers.txt
+## NOTE: physnetext --> must match what we used at answers.txt
 neutron net-create ext --shared  --provider:network_type flat --provider:physical_network physnetext
 neutron net-update ext --router:external=True
 
