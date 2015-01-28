@@ -8,6 +8,14 @@ file { '/root/answers.txt':
     content => template('/vagrant/puppet/templates/answers.txt.erb'),
 }
 
+file { '/root/answers.txt.orig':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => 0666,
+    content => template('/vagrant/puppet/templates/answers.txt.orig.erb'),
+}
+
 file { '/home/vagrant/keystonerc_user1':
     ensure  => file,
     owner   => 'vagrant',
