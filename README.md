@@ -1,7 +1,7 @@
 # RDO-NODES
 
 This repo provides a Vagrantfile with provisioning that one can use to easily
-get a cluster of nodes configured with RDO and packstack.
+get a cluster of nodes configured with RDO Packstack.
 
 ![RDO Nodes Example topology](https://raw.githubusercontent.com/flavio-fernandes/rdo-nodes/master/images/rdo-nodes%20example.jpg)
 
