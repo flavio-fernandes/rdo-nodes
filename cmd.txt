@@ -12,3 +12,12 @@ sudo chmod 755 ./odl_prepare_control.sh ; \
 
 sudo openstack-service restart
 
+
+
+feature:install odl-base-all odl-aaa-authn odl-restconf odl-nsf-all odl-adsal-northbound odl-mdsal-apidocs odl-ovsdb-openstack odl-ovsdb-northbound odl-dlux-core
+
+
+
+
+sudo ovs-vsctl set-manager tcp:192.168.50.1:6640
+

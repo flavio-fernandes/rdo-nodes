@@ -9,12 +9,12 @@ fi
 sudo systemctl stop neutron-openvswitch-agent
 sudo systemctl disable neutron-openvswitch-agent
 
-# Stops, cleans and restarts openvswitch and logs captured.
-sudo systemctl stop openvswitch
-sudo rm -rf /var/log/openvswitch/*
-sudo rm -rf /etc/openvswitch/conf.db
-sudo systemctl start openvswitch
-sudo ovs-vsctl show
+## # Stops, cleans and restarts openvswitch and logs captured.
+## sudo systemctl stop openvswitch
+## sudo rm -rf /var/log/openvswitch/*
+## sudo rm -rf /etc/openvswitch/conf.db
+## sudo systemctl start openvswitch
+## sudo ovs-vsctl show
 
 # Purges any left over namespaces
 for ns in `ip netns`
@@ -49,8 +49,10 @@ done
 for i in `sudo ovs-vsctl show | grep Bridge | awk '{print $2}'` ; do
     if [[ $i == *br-eth1* ]]; then
         sudo ovs-vsctl --if-exists del-br 'br-eth1'
-    else
-        sudo ovs-vsctl --if-exists del-br $i
+    else 
+	if [[ $i != br-ex ]]; then
+            sudo ovs-vsctl --if-exists del-br $i
+	fi
     fi
 done
 
@@ -67,7 +69,7 @@ for i in phy-br-eth1 int-br-eth1; do
     fi
 done
 
-for iface in br-ex br-int br-tun; do
+for iface in br-int br-tun; do
     sudo ovs-dpctl del-if ovs-system $iface
 done
 
