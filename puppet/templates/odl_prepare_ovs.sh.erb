@@ -1,0 +1,80 @@
+#!/bin/bash
+
+if [ ! -f /usr/bin/ovs-vsctl ]; then
+    echo 'noop: ovs-vsctl not found'
+    exit 0
+fi
+
+# Stop and disable Neutron Openvswitch Agent
+sudo systemctl stop neutron-openvswitch-agent
+sudo systemctl disable neutron-openvswitch-agent
+
+# Stops, cleans and restarts openvswitch and logs captured.
+sudo systemctl stop openvswitch
+sudo rm -rf /var/log/openvswitch/*
+sudo rm -rf /etc/openvswitch/conf.db
+sudo systemctl start openvswitch
+sudo ovs-vsctl show
+
+# Purges any left over namespaces
+for ns in `ip netns`
+do
+    `sudo ip netns del $ns`
+done
+
+for qvb in `ifconfig -a | grep qvb | cut -d' ' -f1`
+do
+    `sudo ip link set $qvb down`
+    `sudo ip link delete $qvb`
+done
+
+for qbr in `ifconfig -a | grep qbr | cut -d' ' -f1`
+do
+    `sudo ip link set $qbr down`
+    `sudo ip link delete $qbr`
+done
+
+for qvo in `ifconfig -a | grep qvo | cut -d' ' -f1`
+do
+    `sudo ovs-vsctl --if-exists del-port br-int $qvo`
+done
+
+for tap in `ifconfig -a | grep tap | cut -d' ' -f1`
+do
+    tap="${tap%?}"
+    `sudo ip link set $tap down`
+    `sudo ovs-vsctl --if-exists del-port br-int $tap`
+done
+
+for i in `sudo ovs-vsctl show | grep Bridge | awk '{print $2}'` ; do
+    if [[ $i == *br-eth1* ]]; then
+        sudo ovs-vsctl --if-exists del-br 'br-eth1'
+    else
+        sudo ovs-vsctl --if-exists del-br $i
+    fi
+done
+
+for i in `ip addr | grep tap | awk '{print $2}'`; do
+    tap="${i%?}"
+    echo "tap=$tap"
+    sudo ip link del dev $tap
+done
+
+for i in phy-br-eth1 int-br-eth1; do
+    ip -o link show dev $i &> /dev/null
+    if [ $? -eq 0 ]; then
+        sudo ip link del dev $i
+    fi
+done
+
+for iface in br-ex br-int br-tun; do
+    sudo ovs-dpctl del-if ovs-system $iface
+done
+
+for iface in `sudo ovs-dpctl show | awk 'match($0, /[Pp]ort\s+[[:digit:]]+\s*\:\s*(.+).+\(vxlan/, m) { print m[1]; }'` ; do
+    echo ${iface}
+    sudo ovs-dpctl del-if ovs-system ${iface}
+done
+
+sudo ovs-dpctl show
+
