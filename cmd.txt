@@ -1,0 +1,14 @@
+
+sudo cp /vagrant/puppet/templates/odl_prepare_ovs.sh.erb ./openstack_part0_odl_ovs.sh ; \
+sudo chmod 755 ./openstack_part0_odl_ovs.sh ; \
+./openstack_part0_odl_ovs.sh
+
+
+
+sudo cp /vagrant/puppet/templates/odl_prepare_control.sh.erb ./odl_prepare_control.sh ; \
+sudo chmod 755 ./odl_prepare_control.sh ; \
+./odl_prepare_control.sh
+
+
+sudo openstack-service restart
+
