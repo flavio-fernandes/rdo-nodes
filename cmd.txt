@@ -1,17 +1,20 @@
 
+# neutron and computes
 sudo cp /vagrant/puppet/templates/odl_prepare_ovs.sh.erb ./openstack_part0_odl_ovs.sh ; \
 sudo chmod 755 ./openstack_part0_odl_ovs.sh ; \
 ./openstack_part0_odl_ovs.sh
 
+sudo ovs-vsctl set-manager tcp:192.168.50.1:6640
+
+sudo openstack-service restart
 
 
+#control
 sudo cp /vagrant/puppet/templates/odl_prepare_control.sh.erb ./odl_prepare_control.sh ; \
 sudo chmod 755 ./odl_prepare_control.sh ; \
 ./odl_prepare_control.sh
 
-
 sudo openstack-service restart
-
 
 
 feature:install odl-base-all odl-aaa-authn odl-restconf odl-nsf-all odl-adsal-northbound odl-mdsal-apidocs odl-ovsdb-openstack odl-ovsdb-northbound odl-dlux-core
@@ -19,5 +22,4 @@ feature:install odl-base-all odl-aaa-authn odl-restconf odl-nsf-all odl-adsal-no
 
 
 
-sudo ovs-vsctl set-manager tcp:192.168.50.1:6640
 

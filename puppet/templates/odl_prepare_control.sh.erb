@@ -2,6 +2,9 @@ sudo systemctl stop neutron-server
 
 ML2CONFFILE='/etc/neutron/plugins/ml2/ml2_conf.ini'
 
+sudo crudini --set ${ML2CONFFILE} ml2 mechanism_drivers opendaylight 
+sudo crudini --set ${ML2CONFFILE} ml2 tenant_network_types vxlan
+
 ODL_IP='192.168.50.1'
 SET_ML2ODLURL="http://${ODL_IP}:8080/controller/nb/v2/neutron"
 CURR_ML2ODLURL=$(sudo crudini --get ${ML2CONFFILE} ml2_odl url 2> /dev/null)
