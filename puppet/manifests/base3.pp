@@ -7,6 +7,14 @@ package { $deps:
     ensure => installed,
 }
 
+file { "/etc/resolv.conf":
+  ensure => "file",
+  owner  => "root",
+  group  => "root",
+  mode   => 644,
+  content => template('/vagrant/puppet/templates/resolv.conf.erb'),
+}
+
 file { "/root/.ssh":
   ensure => "directory",
   owner  => "root",
