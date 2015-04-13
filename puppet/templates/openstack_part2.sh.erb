@@ -42,7 +42,8 @@ done
 # Assign floating ips to all tenant vms
 for VMNAME in vm1 vm2 vm3 ; do \
     neutron floatingip-create ext
-    FLOAT_IP=$(neutron floatingip-list | grep -v '2.0.0.' | grep -v '3.0.0.' | grep '192.168.111.' | head -1 | awk '{print $5}')
+    # Add back-slash to make . a real dot: 2.0.0. 3.0.0. 192.168.111. 
+    FLOAT_IP=$(neutron floatingip-list | grep -v '2\.0\.0\.' | grep -v '3\.0\.0\.' | grep '192\.168\.111\.' | head -1 | awk '{print $5}')
     echo "Assigning floating ip ${FLOAT_IP} to ${VMNAME}"
     nova add-floating-ip ${VMNAME} ${FLOAT_IP} 
 done
