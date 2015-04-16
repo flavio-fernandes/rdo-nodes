@@ -20,10 +20,19 @@ keystone tenant-create --name=tenant2 --enabled=true
 keystone user-create --name=user2 --pass=user2 --email=user2@example.com 
 keystone user-role-add --user=user2 --role=_member_ --tenant=tenant2
 
-## NOTE: physnetext --> must match what we used at answers.txt
-neutron net-create ext --shared  --provider:network_type flat --provider:physical_network physnetext
-neutron net-update ext --router:external=True
+## NOTE: physnetext2 --> must match what we used at answers.txt
+neutron net-create ext1 --router:external=True \
+   --tenant_id=tenant1 --provider:network_type flat \
+   --provider:physical_network physnetext2
 
 neutron subnet-create --allocation-pool start=192.168.111.20,end=192.168.111.99 --gateway=192.168.111.254 \
---disable-dhcp --name subext ext 192.168.111.0/24
+   --disable-dhcp --name subext1 ext1 192.168.111.0/24
+
+## NOTE: physnetext3 --> must match what we used at answers.txt
+neutron net-create ext2 --router:external=True \
+   --tenant_id=tenant2 --provider:network_type flat \
+   --provider:physical_network physnetext3
+
+neutron subnet-create --allocation-pool start=192.168.112.20,end=192.168.112.99 --gateway=192.168.112.254 \
+   --disable-dhcp --name subext2 ext2 192.168.112.0/24
 

@@ -7,18 +7,18 @@ if [ ! -f id_rsa_demo.pub ]; then ssh-keygen -t rsa -b 2048 -N '' -f id_rsa_demo
 nova keypair-add --pub-key  id_rsa_demo.pub  demo_key
 
 neutron router-create rtr2
-neutron router-gateway-set rtr2 ext
+neutron router-gateway-set rtr2 ext2
 
 nova secgroup-create sec2 "sec2"
 nova secgroup-add-rule sec2 icmp -1 -1 0.0.0.0/0
 for x in tcp udp; do nova secgroup-add-rule sec2 ${x} 1 65535 0.0.0.0/0 ; done
 
 neutron  net-create int
-neutron  subnet-create --gateway=4.0.0.254 --name=subint int 4.0.0.0/24 --enable-dhcp --dns-nameserver=192.168.111.254
+neutron  subnet-create --gateway=4.0.0.254 --name=subint int 4.0.0.0/24 --enable-dhcp --dns-nameserver=192.168.112.254
 neutron	 router-interface-add rtr2 subint
 
 neutron  net-create intTwo
-neutron  subnet-create --gateway=3.0.0.254 --name=subintTwo intTwo 3.0.0.0/24 --enable-dhcp --dns-nameserver=192.168.111.254
+neutron  subnet-create --gateway=3.0.0.254 --name=subintTwo intTwo 3.0.0.0/24 --enable-dhcp --dns-nameserver=192.168.112.254
 neutron	 router-interface-add rtr2 subintTwo
 
 # Tenant vm(s) in subnet[One]
@@ -41,9 +41,9 @@ done
 
 # Assign floating ips to all tenant vms
 for VMNAME in vm1 vm2 vm3 ; do \
-    neutron floatingip-create ext
-    # Add back-slash to make . a real dot: 4.0.0. 3.0.0. 192.168.111. 
-    FLOAT_IP=$(neutron floatingip-list | grep -v '4\.0\.0\.' | grep -v '3\.0\.0\.' | grep '192\.168\.111\.' | head -1 | awk '{print $5}')
+    neutron floatingip-create ext2
+    # Add back-slash to make . a real dot: 4.0.0. 3.0.0. 192.168.112. 
+    FLOAT_IP=$(neutron floatingip-list | grep -v '4\.0\.0\.' | grep -v '3\.0\.0\.' | grep '192\.168\.112\.' | head -1 | awk '{print $5}')
     echo "Assigning floating ip ${FLOAT_IP} to ${VMNAME}"
     nova add-floating-ip ${VMNAME} ${FLOAT_IP} 
 done

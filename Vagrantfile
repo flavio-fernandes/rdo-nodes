@@ -11,6 +11,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   control_ip = "192.168.50.20"
   neutron_ip = "192.168.50.21"
   neutron_ex_ip = "192.168.111.11"
+  neutron_ex_ip2 = "192.168.112.11"
+  neutron_ex_ip3 = "192.168.113.11"
   compute_ip_base = "192.168.50."
   compute_ips = num_compute_nodes.times.collect { |n| compute_ip_base + "#{n+22}" }
 
@@ -51,6 +53,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     neutron.vm.network "private_network", ip: "#{neutron_ip}"
     ## neutron.vm.network "private_network", type: "dhcp", virtualbox__intnet: "intnet", auto_config: false
     neutron.vm.network "private_network", ip: "#{neutron_ex_ip}", virtualbox__intnet: "mylocalnet"
+    neutron.vm.network "private_network", ip: "#{neutron_ex_ip2}", virtualbox__intnet: "mylocalnet2"
+    neutron.vm.network "private_network", ip: "#{neutron_ex_ip3}", virtualbox__intnet: "mylocalnet3"
     neutron.vm.provider :virtualbox do |vb|
       ## vb.gui = true
       vb.customize ["modifyvm", :id, "--memory", "1024"]
@@ -60,9 +64,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
       vb.customize ["modifyvm", :id, "--nictype2", "virtio"]
       vb.customize ["modifyvm", :id, "--nictype3", "virtio"]
+      vb.customize ["modifyvm", :id, "--nictype4", "virtio"]
+      vb.customize ["modifyvm", :id, "--nictype5", "virtio"]
       vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
       vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
-      vb.customize ["modifyvm", :id, "--macaddress3", "0000000000FE"]
+      vb.customize ["modifyvm", :id, "--nicpromisc4", "allow-all"]
+      vb.customize ["modifyvm", :id, "--nicpromisc5", "allow-all"]
+      vb.customize ["modifyvm", :id, "--macaddress3", "0000000001FE"]
+      vb.customize ["modifyvm", :id, "--macaddress4", "0000000002FE"]
+      vb.customize ["modifyvm", :id, "--macaddress5", "0000000003FE"]
     end
     neutron.vm.provider "vmware_fusion" do |vf|
       vf.vmx["memsize"] = "1024"

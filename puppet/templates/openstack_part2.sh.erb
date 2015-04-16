@@ -7,7 +7,7 @@ if [ ! -f id_rsa_demo.pub ]; then ssh-keygen -t rsa -b 2048 -N '' -f id_rsa_demo
 nova keypair-add --pub-key  id_rsa_demo.pub  demo_key
 
 neutron router-create rtr1
-neutron router-gateway-set rtr1 ext
+neutron router-gateway-set rtr1 ext1
 
 nova secgroup-create sec1 "sec1"
 nova secgroup-add-rule sec1 icmp -1 -1 0.0.0.0/0
@@ -41,7 +41,7 @@ done
 
 # Assign floating ips to all tenant vms
 for VMNAME in vm1 vm2 vm3 ; do \
-    neutron floatingip-create ext
+    neutron floatingip-create ext1
     # Add back-slash to make . a real dot: 2.0.0. 3.0.0. 192.168.111. 
     FLOAT_IP=$(neutron floatingip-list | grep -v '2\.0\.0\.' | grep -v '3\.0\.0\.' | grep '192\.168\.111\.' | head -1 | awk '{print $5}')
     echo "Assigning floating ip ${FLOAT_IP} to ${VMNAME}"
