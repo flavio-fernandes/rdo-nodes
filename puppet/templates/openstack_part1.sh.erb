@@ -22,7 +22,8 @@ keystone user-role-add --user=user2 --role=_member_ --tenant=tenant2
 
 ## NOTE: physnetext2 --> must match what we used at answers.txt
 neutron net-create ext1 --router:external=True \
-   --tenant_id=tenant1 --provider:network_type flat \
+   --tenant_id=$(keystone tenant-list | grep tenant1 | awk '{print $2}') \
+   --provider:network_type flat \
    --provider:physical_network physnetext2
 
 neutron subnet-create --allocation-pool start=192.168.111.20,end=192.168.111.99 --gateway=192.168.111.254 \
@@ -30,7 +31,8 @@ neutron subnet-create --allocation-pool start=192.168.111.20,end=192.168.111.99 
 
 ## NOTE: physnetext3 --> must match what we used at answers.txt
 neutron net-create ext2 --router:external=True \
-   --tenant_id=tenant2 --provider:network_type flat \
+   --tenant_id=$(keystone tenant-list | grep tenant2 | awk '{print $2}') \
+   --provider:network_type flat \
    --provider:physical_network physnetext3
 
 neutron subnet-create --allocation-pool start=192.168.112.20,end=192.168.112.99 --gateway=192.168.112.254 \
