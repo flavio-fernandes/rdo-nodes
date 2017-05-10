@@ -5,7 +5,9 @@ get a cluster of nodes configured with RDO and packstack.
 
 ##Pre-requisites:
 
-### [Vagrant][0]
+**Generate ssh keys! See: dotSshDir/id_rsa.erb.README**
+
+### [Vagrant][0] (and a hypervisor, like Virtual Box)
 
 ### [Vagrant Reload Provisioner][1]
 
