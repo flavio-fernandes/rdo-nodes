@@ -36,7 +36,7 @@ file { "/root/.ssh/id_rsa.pub":
   owner  => "root",
   group  => "root",
   mode   => 644,
-  content => template('/vagrant/puppet/templates/dotSshDir/id_rsa.pub.erb'),
+  content => template('/vagrant/puppet/templates/dotSshDir/id_rsa.erb.pub'),
   require => File["/root/.ssh"],
 }
 
