@@ -1,6 +1,8 @@
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
+# TODO: generate ssh keys! See dotSshDir/id_rsa.erb.README
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "shell", path: "puppet/scripts/bootstrap.sh"
